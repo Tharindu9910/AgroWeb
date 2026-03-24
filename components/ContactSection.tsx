@@ -27,19 +27,19 @@ const ContactSection = () => {
           console.log("SUCCESS!", result.text);
           form.current?.reset();
           setSending(false);
-          setSent(true)
+          setSent(true);
           const timer = setTimeout(() => {
             setSent(false);
           }, 5000);
 
           return () => clearTimeout(timer);
-          
-        //   alert("Message sent successfully!");
+
+          //   alert("Message sent successfully!");
         },
         (error) => {
           console.log("FAILED...", error.text);
           setSending(false);
-        //   alert("Something went wrong.");
+          //   alert("Something went wrong.");
         }
       );
   };
@@ -48,14 +48,27 @@ const ContactSection = () => {
     "w-full bg-[#F0EBE0] rounded-xl px-4 py-3.5 text-sm text-gray-700 placeholder-gray-400 outline-none focus:ring-2 focus:ring-green-600/40 transition";
 
   return (
-    <section id="contact_us" className="relative bg-[#F5F0E8] py-20 px-4 sm:px-8 lg:px-14 xl:px-20 overflow-hidden">
-      <div className="absolute inset-0 z-10 bg-gradient-to-b from-black/70 via-black/20 to-black/60" />
-      <Image
-        src="/palm-trees-full.png"
-        alt="background"
-        fill
-        className="object-cover"
-      />
+    <section
+      id="contact_us"
+      className="relative bg-[#F5F0E8] py-20 px-4 sm:px-8 lg:px-14 xl:px-20 overflow-hidden"
+    >
+      <div className="absolute inset-0">
+        {/* Image FIRST (important for layering) */}
+        <Image
+          src="/palm-trees-full.webp"
+          alt="background"
+          fill
+          priority
+          quality={70}
+          sizes="100vw"
+          placeholder="blur"
+          blurDataURL="/palm-trees-full-blur.jpg" // tiny blurred version
+          className="object-cover"
+        />
+
+        {/* Overlay on top */}
+        <div className="absolute inset-0 z-10 bg-gradient-to-b from-black/70 via-black/20 to-black/60" />
+      </div>
       <div className="relative z-10 max-w-7xl mx-auto">
         <div className="bg-white rounded-3xl overflow-hidden">
           <div className="grid grid-cols-1 lg:grid-cols-2 min-h-[500px]">
@@ -166,28 +179,31 @@ const ContactSection = () => {
 
                 {/* Submit */}
                 <div className="flex flex-col gap-3 items-center justify-center lg:items-start lg:justify-normal">
-                  <div className="flex items-center flex-row gap-2"><button
-                    type="submit"
-                    className="inline-flex items-center gap-2 bg-[#3D7A3A] hover:bg-[#2f6230] text-white text-sm font-semibold px-7 py-3.5 rounded-full transition-colors"
-                  >
-                    Send Message
-                    {sending ? (
-                      <LoadingSpinner />
-                    ) : (
-                      <svg
-                        className="w-4 h-4"
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        stroke="currentColor"
-                        strokeWidth="2.5"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                      >
-                        <path d="M7 17L17 7" />
-                        <path d="M7 7h10v10" />
-                      </svg>
-                    )}
-                  </button>{sent && <p className="text-xs text-[#3D7A3A]">Sent</p>}</div>
+                  <div className="flex items-center flex-row gap-2">
+                    <button
+                      type="submit"
+                      className="inline-flex items-center gap-2 bg-[#3D7A3A] hover:bg-[#2f6230] text-white text-sm font-semibold px-7 py-3.5 rounded-full transition-colors"
+                    >
+                      Send Message
+                      {sending ? (
+                        <LoadingSpinner />
+                      ) : (
+                        <svg
+                          className="w-4 h-4"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          stroke="currentColor"
+                          strokeWidth="2.5"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                        >
+                          <path d="M7 17L17 7" />
+                          <path d="M7 7h10v10" />
+                        </svg>
+                      )}
+                    </button>
+                    {sent && <p className="text-xs text-[#3D7A3A]">Sent</p>}
+                  </div>
                 </div>
               </form>
             </div>

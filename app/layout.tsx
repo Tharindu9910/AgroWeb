@@ -7,7 +7,7 @@ import Footer from '@/components/Footer';
 export const metadata: Metadata = {
   title: 'TharulAgro',
   icons: {
-    icon: '/favicon.ico', // This looks into the /public folder by default
+    icon: '/logo-tharul-agro.svg', // This looks into the /public folder by default
   },
   description: 'Pure coco with perfect growth',
 }

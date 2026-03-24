@@ -1,6 +1,6 @@
 "use client";
 import Image from "next/image";
-import Button from "./Button";
+import { motion } from "framer-motion";
 import gsap from "gsap";
 import { useGSAP } from "@gsap/react";
 import { useRef, useState } from "react";
@@ -11,7 +11,7 @@ if (typeof window !== "undefined") {
   gsap.registerPlugin(TextPlugin);
 }
 
-const words = ["Sustainable", "Organic", "Rooted","Nourishing", "Natural"];
+const words = ["Sustainable", "Organic", "Rooted", "Nourishing", "Natural"];
 
 const Hero = () => {
   const [wordIndex, setWordIndex] = useState(0);
@@ -29,54 +29,54 @@ const Hero = () => {
         text: word, // The plugin handles the typing
         ease: "none",
       })
-      .to({}, { duration: 1.5 }) // Pause while the word is fully typed
-      .to(textRef.current, {
-        duration: 0.8,
-        text: "", // The "backspace" effect
-        ease: "none",
-      });
+        .to({}, { duration: 1.5 }) // Pause while the word is fully typed
+        .to(textRef.current, {
+          duration: 0.8,
+          text: "", // The "backspace" effect
+          ease: "none",
+        });
     });
   }, []);
 
   return (
     <section className="relative min-h-screen max-container padding-container flex flex-col pb-32 lg:pb-20 xl:flex-row">
       {/* Bg */}
-      <div className="absolute inset-0 -z-10 overflow-hidden">
-        <img
-          src="/hero-image.svg"
+      <motion.div
+  initial={{ scale: 1.1, opacity: 0 }}
+  animate={{ scale: 1, opacity: 1 }}
+  transition={{ duration: 1.2, ease: "easeOut" }}
+  className="absolute inset-0 -z-10 overflow-hidden"
+><Image
+          src="/hero-image.webp"
           alt="Hero image"
-          className="h-full w-full object-cover opacity-100"
-        />
-      </div>
+          fill
+          priority
+          sizes="100vw"
+          quality={70}
+          placeholder="blur"
+          blurDataURL="/hero-image-blur.jpg" // tiny blurred image
+          className="object-cover"
+        /></motion.div>
+    
       <div className=" z-20 pt-32 flex flex-col gap-8 sm:pl-10 sm:w-[90vw] lg:pl-0 xl:w-[80vw]">
-      <h1 className="font-signika text-5xl sm:text-6xl lg:text-7xl font-extrabold text-black">
-        Pioneering{" "}
-        <br className="sm:hidden"/>
-        <span className="inline-flex items-center">
-          <span 
-            ref={textRef} 
-            className="text-[#5B8C51] border-r-4 border-[#5B8C51] text-7xl sm:mt-0 sm:text-6xl lg:text-7xl pr-1 min-w-[20px] animate-pulse-cursor"
-          >
-            {/* Initially empty for GSAP to type into */}
+        <h1 className="font-signika text-5xl sm:text-6xl lg:text-7xl font-extrabold text-black">
+          Pioneering <br className="sm:hidden" />
+          <span className="inline-block items-center py-2 sm:py-0">
+            <span
+              ref={textRef}
+              className="text-[#5B8C51] border-r-4 border-[#5B8C51] text-6xl sm:mt-0 sm:text-6xl lg:text-7xl pr-1 min-w-[20px] animate-pulse-cursor"
+            >
+              &nbsp;
+              {/* Initially empty for GSAP to type into */}
+            </span>
           </span>
-        </span>
-        <br />
+          <br />
           Growth
           <span className="hidden sm:inline-block -ml-1 lg:-ml-1 mb-4">
-            <Image
-              src="/leaf-01.svg"
-              alt="logo"
-              width={60}
-              height={60}
-            />
+            <Image src="/leaf-01.svg" alt="logo" width={60} height={60} />
           </span>
           <span className="sm:hidden inline-block -ml-1 mb-4">
-            <Image
-              src="/leaf-01.svg"
-              alt="logo"
-              width={30}
-              height={30}
-            />
+            <Image src="/leaf-01.svg" alt="logo" width={30} height={30} />
           </span>
         </h1>
         {/* <p className="regular-16 mt-6 text-gray-30 xl:max-w-[520px]">
@@ -86,8 +86,12 @@ const Hero = () => {
         <div className="flex flex-row gap-3 sm:flex-row">
           {/* <Button type="button" title="Download App" variant="btn_green" /> */}
           {/* <Button type="button" title="Contact Us" variant="btn_white_text" /> */}
-          <a href="#contact_us" className="bg-white rounded-3xl py-2 px-6 text-sm sm:text-base lg:text-lg shadow-lg font-semibold">Contact Us</a>
-
+          <a
+            href="#contact_us"
+            className="bg-white rounded-3xl py-2 px-6 text-sm sm:text-base lg:text-lg shadow-lg font-semibold"
+          >
+            Contact Us
+          </a>
         </div>
       </div>
 

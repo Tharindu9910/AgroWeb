@@ -253,7 +253,7 @@ export default function ProductPage({ params }: { params: { id: string } }) {
       <section className="bg-[#4A7A35] relative px-4 sm:px-8 lg:px-16 xl:px-24 py-16">
         <div className="absolute inset-0 z-10 bg-black/60" />
         <Image
-          src="/palm-trees-full.png"
+          src="/palm-trees-full.webp"
           alt="background"
           fill
           className="object-cover"

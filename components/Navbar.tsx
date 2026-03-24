@@ -1,42 +1,68 @@
 "use client";
-import { NAV_LINKS } from "@/constants"
-import Image from "next/image"
-import Link from "next/link"
-import Button from "./Button"
-import { Menu, PhoneCall, X } from "lucide-react"
-import { useEffect, useState } from "react"
+import { NAV_LINKS } from "@/constants";
+import Image from "next/image";
+import Link from "next/link";
+import Button from "./Button";
+import { Menu, PhoneCall, X } from "lucide-react";
+import { useEffect, useRef, useState } from "react";
 
 const Navbar = () => {
-  const [isScrolled, setIsScrolled] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
 
-  
+  const navRef = useRef<HTMLDivElement | null>(null);
+  const ticking = useRef(false);
+
   useEffect(() => {
-    const onScroll = () => setIsScrolled(window.scrollY > 10);
-    window.addEventListener("scroll", onScroll, { passive: true });
-    return () => window.removeEventListener("scroll", onScroll);
+    const handleScroll = () => {
+      if (!ticking.current) {
+        window.requestAnimationFrame(() => {
+          if (!navRef.current) return;
+
+          if (window.scrollY > 10) {
+            navRef.current.classList.add(
+              "bg-white/95",
+              "backdrop-blur-md",
+              "shadow-sm",
+              "py-2"
+            );
+            navRef.current.classList.remove("bg-transparent", "py-4");
+          } else {
+            navRef.current.classList.remove(
+              "bg-white/95",
+              "backdrop-blur-md",
+              "shadow-sm",
+              "py-2"
+            );
+            navRef.current.classList.add("bg-transparent", "py-4");
+          }
+
+          ticking.current = false;
+        });
+
+        ticking.current = true;
+      }
+    };
+
+    window.addEventListener("scroll", handleScroll, { passive: true });
+
+    return () => window.removeEventListener("scroll", handleScroll);
   }, []);
- 
+
   // Lock body scroll when mobile menu is open
   useEffect(() => {
     document.body.style.overflow = menuOpen ? "hidden" : "";
-    return () => { document.body.style.overflow = ""; };
+    return () => {
+      document.body.style.overflow = "";
+    };
   }, [menuOpen]);
- 
+
   return (
     <>
       <nav
-        className={`
-          fixed top-0 left-0 right-0 z-50
-          transition-all duration-300 ease-in-out
-          ${isScrolled
-            ? "bg-white/95 backdrop-blur-md shadow-sm py-2"
-            : "bg-transparent py-4"
-          }
-        `}
+        ref={navRef}
+        className="fixed top-0 left-0 right-0 z-50 transition-all duration-300 ease-in-out bg-transparent py-4"
       >
         <div className="max-w-7xl mx-auto px-4 sm:px-8 lg:px-14 flex items-center justify-between">
- 
           {/* Logo */}
           <Link href="/" className="flex-shrink-0 z-10">
             <Image
@@ -48,7 +74,7 @@ const Navbar = () => {
               priority
             />
           </Link>
- 
+
           {/* Desktop nav links */}
           <ul className="hidden lg:flex items-center gap-1 font-signika">
             {NAV_LINKS.map((link, index) => (
@@ -65,16 +91,18 @@ const Navbar = () => {
               </li>
             ))}
           </ul>
- 
+
           {/* Desktop CTA */}
           <div className="hidden lg:flex items-center gap-2.5 rounded-xl px-4 py-2">
             <PhoneCall size={25} className="text-[#5B8C51] flex-shrink-0" />
             <div className="font-signika leading-tight">
               <p className="text-xs pl-1 text-gray-500">Call Us Now</p>
-              <p className="text-base font-semibold text-gray-800">+94 77 650 6029</p>
+              <p className="text-base font-semibold text-gray-800">
+                +94 77 650 6029
+              </p>
             </div>
           </div>
- 
+
           {/* Mobile: phone icon + hamburger */}
           <div className="flex lg:hidden items-center gap-3">
             <a
@@ -91,12 +119,20 @@ const Navbar = () => {
               className="w-9 h-9 rounded-full  border border-green-100 flex items-center justify-center transition-colors hover:bg-green-100"
             >
               <span
-                className={`transition-all duration-300 ${menuOpen ? "rotate-90 opacity-0 absolute" : "rotate-0 opacity-100"}`}
+                className={`transition-all duration-300 ${
+                  menuOpen
+                    ? "rotate-90 opacity-0 absolute"
+                    : "rotate-0 opacity-100"
+                }`}
               >
                 <Menu size={18} className="text-[#5B8C51]" />
               </span>
               <span
-                className={`transition-all duration-300 ${menuOpen ? "rotate-0 opacity-100" : "-rotate-90 opacity-0 absolute"}`}
+                className={`transition-all duration-300 ${
+                  menuOpen
+                    ? "rotate-0 opacity-100"
+                    : "-rotate-90 opacity-0 absolute"
+                }`}
               >
                 <X size={18} className="text-[#5B8C51]" />
               </span>
@@ -104,18 +140,22 @@ const Navbar = () => {
           </div>
         </div>
       </nav>
- 
+
       {/* Mobile drawer overlay */}
       <div
         onClick={() => setMenuOpen(false)}
         className={`
           fixed inset-0 z-40 bg-black/30 backdrop-blur-sm
           transition-opacity duration-300 lg:hidden
-          ${menuOpen ? "opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none"}
+          ${
+            menuOpen
+              ? "opacity-100 pointer-events-auto"
+              : "opacity-0 pointer-events-none"
+          }
         `}
         aria-hidden
       />
- 
+
       {/* Mobile drawer */}
       <div
         className={`
@@ -144,7 +184,7 @@ const Navbar = () => {
             <X size={16} className="text-gray-600" />
           </button>
         </div>
- 
+
         {/* Drawer links */}
         <ul className="flex flex-col px-4 py-6 gap-1 font-signika flex-1">
           {NAV_LINKS.map((link, index) => (
@@ -155,12 +195,15 @@ const Navbar = () => {
                 className={`
                   flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium text-gray-700
                   hover:text-[#5B8C51] transition-all duration-200
-                  ${menuOpen
-                    ? "translate-x-0 opacity-100"
-                    : "translate-x-4 opacity-0"
+                  ${
+                    menuOpen
+                      ? "translate-x-0 opacity-100"
+                      : "translate-x-4 opacity-0"
                   }
                 `}
-                style={{ transitionDelay: menuOpen ? `${index * 50 + 100}ms` : "0ms" }}
+                style={{
+                  transitionDelay: menuOpen ? `${index * 50 + 100}ms` : "0ms",
+                }}
               >
                 <span className="h-1.5 w-1.5 rounded-full bg-[#5B8C51]" />
                 {link.label}
@@ -168,7 +211,7 @@ const Navbar = () => {
             </li>
           ))}
         </ul>
- 
+
         {/* Drawer footer CTA */}
         <div className="px-6 py-6 border-t border-green-100 bg-[#4A7A35]">
           <a
@@ -178,15 +221,18 @@ const Navbar = () => {
             <PhoneCall size={18} className="text-white flex-shrink-0" />
             <div className="font-signika leading-tight">
               <p className="text-xs text-white">Call Us Now</p>
-              <p className="text-sm font-semibold text-yellow-300 ">+94 77 650 6029</p>
+              <p className="text-sm font-semibold text-yellow-300 ">
+                +94 77 650 6029
+              </p>
             </div>
           </a>
         </div>
       </div>
     </>
- )
-}
-{/* <nav className={`
+  );
+};
+{
+  /* <nav className={`
       fixed top-0 left-0 right-0 z-50 transition-all duration-300
       flexBetween max-container lg:px-14 py-4
       ${isScrolled 
@@ -211,8 +257,7 @@ const Navbar = () => {
         <PhoneCall size={30} className="text-[#5B8C51]" />
         <p className="pl-2 text-sm font-signika">Call Us Now <br/><span> +94 77 650 6029</span></p>
       </div>
-    </nav> */}
+    </nav> */
+}
 
- 
-
-export default Navbar
+export default Navbar;

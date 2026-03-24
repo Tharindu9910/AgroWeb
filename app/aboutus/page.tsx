@@ -1,4 +1,7 @@
+"use client";
+
 import Image from "next/image";
+import { motion, Variants } from "framer-motion";
 
 interface TeamMember {
   name: string;
@@ -62,73 +65,142 @@ const TeamCard = ({ member }: { member: TeamMember }) => (
   </div>
 );
 
-// ── Full Page ─────────────────────────────────────────────────────────────────
+const container: Variants = {
+  hidden: {},
+  show: {
+    transition: {
+      staggerChildren: 0.15,
+    },
+  },
+};
+
+const fadeUp: Variants = {
+  hidden: { opacity: 0, y: 30 },
+  show: {
+    opacity: 1,
+    y: 0,
+    transition: {
+      duration: 0.6,
+      ease: "easeOut",
+    },
+  },
+};
+
+const fadeIn: Variants = {
+  hidden: { opacity: 0 },
+  show: {
+    opacity: 1,
+    transition: { duration: 1 },
+  },
+};
+
+/* ---------------- MAIN ---------------- */
+
 const AboutTeamPage = () => {
   return (
     <main className="bg-white font-sans">
 
       {/* ── HERO ── */}
       <section className="relative h-[420px] sm:h-[480px] lg:h-[520px] mt-[84px] overflow-hidden">
-        {/* Background image */}
-        <Image
-          src="/team/boadroom.png"
-          alt="Tharul Agro leadership team in a meeting"
-          fill
-          className="object-cover object-center"
-          priority
-        />
-        {/* Dark gradient overlay */}
+
+        {/* Animated background (subtle zoom = premium feel) */}
+        <motion.div
+          initial={{ scale: 1.08 }}
+          animate={{ scale: 1 }}
+          transition={{ duration: 1.5, ease: "easeOut" }}
+          className="absolute inset-0"
+        >
+          <Image
+            src="/team/boadroom.webp"
+            alt="Tharul Agro leadership team in a meeting"
+            fill
+            priority
+            sizes="100vw"
+            quality={70}
+            className="object-cover object-center"
+          />
+        </motion.div>
+
+        {/* Overlay */}
         <div className="absolute inset-0 bg-gradient-to-r from-black/70 via-black/40 to-transparent" />
 
-        {/* Hero text */}
-        <div className="relative z-10 h-full flex flex-col justify-end px-6 sm:px-12 lg:px-20 xl:px-28 pb-14 max-w-4xl">
-          <p className="text-xs font-bold tracking-[0.2em] uppercase text-[#E8D44D] mb-4">
+        {/* Text */}
+        <motion.div
+          variants={container}
+          initial="hidden"
+          animate="show"
+          className="relative z-10 h-full flex flex-col justify-end px-6 sm:px-12 lg:px-20 xl:px-28 pb-14 max-w-4xl"
+        >
+          <motion.p
+            variants={fadeUp}
+            className="text-xs font-bold tracking-[0.2em] uppercase text-[#E8D44D] mb-4"
+          >
             Our Foundation
-          </p>
-          <h1 className="text-4xl sm:text-5xl lg:text-7xl font-extrabold font-signika text-white leading-[1.05] mb-5">
+          </motion.p>
+
+          <motion.h1
+            variants={fadeUp}
+            className="text-4xl sm:text-5xl lg:text-7xl font-extrabold font-signika text-white leading-[1.05] mb-5"
+          >
             Defining the <br />Future of Form
-          </h1>
-          <div className="w-10 h-0.5 bg-[#E8D44D] mb-4" />
-          <p className="text-sm sm:text-base text-white/75 leading-relaxed max-w-sm">
+          </motion.h1>
+
+          <motion.div
+            variants={fadeUp}
+            className="w-10 h-0.5 bg-[#E8D44D] mb-4"
+          />
+
+          <motion.p
+            variants={fadeUp}
+            className="text-sm sm:text-base text-white/75 leading-relaxed max-w-sm"
+          >
             A collective of visionaries dedicated to the intersection of
             structural integrity and aesthetic purity.
-          </p>
-        </div>
+          </motion.p>
+        </motion.div>
       </section>
 
       {/* ── OUR TEAM ── */}
       <section className="px-4 sm:px-8 lg:px-16 xl:px-24 py-16 sm:py-20 bg-white">
-        <div className="max-w-5xl mx-auto">
 
-          {/* Section header */}
+        <motion.div
+          variants={container}
+          initial="hidden"
+          whileInView="show"
+          viewport={{ once: true, margin: "-80px" }}
+          className="max-w-5xl mx-auto"
+        >
+          {/* Header */}
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 lg:gap-16 mb-14">
-            <div>
+            <motion.div variants={fadeUp}>
               <p className="text-xs font-bold tracking-[0.2em] uppercase text-gray-400 mb-3">
                 Leadership
               </p>
               <h2 className="text-4xl sm:text-5xl font-semibold text-gray-900">
                 Our Team
               </h2>
-            </div>
-            <div className="flex items-end">
+            </motion.div>
+
+            <motion.div variants={fadeUp} className="flex items-end">
               <p className="text-sm sm:text-base text-gray-500 leading-relaxed">
-                Guided by a diverse assembly of industry titans, our board
+              Guided by a diverse assembly of industry titans, our board
                 ensures that every product we deliver stands as a testament
                 to enduring excellence.
               </p>
-            </div>
+            </motion.div>
           </div>
 
           {/* Team cards */}
           <div className="flex flex-col gap-8">
-            {TEAM.map((member) => (
-              <TeamCard key={member.name} member={member} />
+            {TEAM.map((member, i) => (
+              <motion.div key={member.name} variants={fadeUp}>
+                <TeamCard member={member} />
+              </motion.div>
             ))}
           </div>
+        </motion.div>
 
-        </div>
       </section>
-
     </main>
   );
 };
